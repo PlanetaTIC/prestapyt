@@ -52,6 +52,8 @@ except ImportError:
 from .version import __author__
 from .version import __version__
 
+from urllib3.exceptions import InsecureRequestWarning
+requests.packages.urllib3.disable_warnings(category=InsecureRequestWarning)
 
 class PrestaShopWebServiceError(Exception):
     """Generic PrestaShop WebServices error class.
@@ -81,7 +83,7 @@ class PrestaShopWebService(object):
     """Interact with the PrestaShop WebService API, use XML for messages."""
 
     MIN_COMPATIBLE_VERSION = '1.4.0.17'
-    MAX_COMPATIBLE_VERSION = '1.5.9.0'
+    MAX_COMPATIBLE_VERSION = '1.6.0.10'
 
     def __init__(self, api_url, api_key, debug=False, session=None,
                  verbose=False, headers=None):
