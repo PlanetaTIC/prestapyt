@@ -84,7 +84,7 @@ class PrestaShopWebService(object):
     MAX_COMPATIBLE_VERSION = '1.5.9.0'
 
     def __init__(self, api_url, api_key, debug=False, session=None,
-                 verbose=False):
+                 verbose=False, headers=None):
         """
         Create an instance of PrestashopWebService.
 
@@ -114,6 +114,8 @@ class PrestaShopWebService(object):
         :param session: pass a custom requests Session
         :param verbose: activate logging of the requests/responses (but no
         responses body)
+        :param headers: Custom header, is a dict accepted by httplib2 as
+        instance {'User-Agent': 'Schkounitz'}
         """
         # required to hit prestashop
         self._api_url = api_url
@@ -135,6 +137,11 @@ class PrestaShopWebService(object):
             self.client = requests.Session()
         else:
             self.client = session
+
+        # merge custom headers
+        self.headers = self.client.headers.copy()
+        if headers is not None:
+            self.headers.update(headers)
 
         if not self.client.auth:
             self.client.auth = (api_key, '')
@@ -233,7 +240,7 @@ class PrestaShopWebService(object):
         if add_headers is None:
             add_headers = {}
 
-        request_headers = self.client.headers.copy()
+        request_headers = self.headers
         request_headers.update(add_headers)
 
         if self.verbose:
